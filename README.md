@@ -1,8 +1,10 @@
+Based upon: https://www.dahetral.com/public-download/alps-psmouse-dlkm-for-3-2-and-3-5/view
+
 History
 -------
 
 1.3.1: Updated to support kernel >= 4.15 (using timer_setup(...) instead
-        of setup_timer(...))
+        of setup_timer(...)) ~grufwub
         
 1.3: Rebase to Kevin Cernekee's Alps mods using the 3.7 kernel.  Added
      init code for the Dell N5110 and segment init code for the 
@@ -87,10 +89,9 @@ it can still be tightened up but, at least, it's usable now.
 Dave Turvene
 
 [1] http://swapspace.forshee.me/2011/11/touchpad-protocol-reverse-engineering.html
-[2] http://www.spinics.net/lists/linux-input/msg21948.html
-[3] http://www.spinics.net/lists/linux-input/msg21993.html
-[4] file:///usr/src/linux-source-3.2.0/linux-3.2.0/Documentation/input/alps.txt
 
-bash shell scripts
-------------------
-See alps.sh for support scripts.
+[2] http://www.spinics.net/lists/linux-input/msg21948.html
+
+[3] http://www.spinics.net/lists/linux-input/msg21993.html
+
+[4] file:///usr/src/linux-source-3.2.0/linux-3.2.0/Documentation/input/alps.txt
