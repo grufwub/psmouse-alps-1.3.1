@@ -20,9 +20,16 @@
 #include <linux/input/mt.h>
 #include <linux/serio.h>
 #include <linux/libps2.h>
+#include <linux/version.h>
 
 #include "psmouse.h"
 #include "alps.h"
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	#define DATA_TYPE (struct timer_list *)
+#else
+	#define DATA_TYPE (unsigned long)
+#endif
 
 /*
  * Definitions for ALPS version 3 and 4 command mode protocol
@@ -841,17 +848,40 @@ static psmouse_ret_t alps_handle_interleaved_ps2(struct psmouse *psmouse)
 	return PSMOUSE_GOOD_DATA;
 }
 
-//static void alps_flush_packet(unsigned long data)
-static void alps_flush_packet(struct timer_list *t)
+static void alps_flush_packet_old(unsigned long data)
 {
-//	struct psmouse *psmouse = (struct psmouse *)data;
-//	struct alps_data *priv = psmouse->private;
-
-	// BEGIN UPDATED CODE
-	// Updated to work with Linux >= 4.15
-	struct psmouse *psmouse = from_timer(psmouse, t, timer);
+	struct psmouse *psmouse = (struct psmouse *)data;
 	struct alps_data *priv = psmouse->private;
-	// END UPDATED CODE
+
+	serio_pause_rx(psmouse->ps2dev.serio);
+
+	if (psmouse->pktcnt == psmouse->pktsize) {
+
+		/*
+		 * We did not any more data in reasonable amount of time.
+		 * Validate the last 3 bytes and process as a standard
+		 * ALPS packet.
+		 */
+		if ((psmouse->packet[3] |
+		     psmouse->packet[4] |
+		     psmouse->packet[5]) & 0x80) {
+			psmouse_dbg(psmouse,
+				    "refusing packet %x %x %x (suspected interleaved ps/2)\n",
+				    psmouse->packet[3], psmouse->packet[4],
+				    psmouse->packet[5]);
+		} else {
+			priv->process_packet(psmouse);
+		}
+		psmouse->pktcnt = 0;
+	}
+
+	serio_continue_rx(psmouse->ps2dev.serio);
+}
+
+static void alps_flush_packet(struct timer_list *data)
+{
+	struct psmouse *psmouse = from_timer(psmouse, data, timer);
+	struct alps_data *priv = psmouse->private;
 
 	serio_pause_rx(psmouse->ps2dev.serio);
 
@@ -1825,12 +1855,12 @@ int alps_init(struct psmouse *psmouse)
 		goto init_fail;
 
 	priv->dev2 = dev2;
-//	setup_timer(&priv->timer, alps_flush_packet, (unsigned long)psmouse);
 
-	// BEGIN UPDATED CODE
-	// Updated to work with Linux >= 4.15
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
 	timer_setup(&psmouse->timer, alps_flush_packet,  0);
-	// END UPDATED CODE
+#else
+	setup_timer(&psmouse->timer, alps_flush_packet_old, (unsigned long) psmouse);
+#endif
 
 	psmouse->private = priv;
 
@@ -1935,4 +1965,3 @@ int alps_detect(struct psmouse *psmouse, bool set_properties)
 	}
 	return 0;
 }
-
