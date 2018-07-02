@@ -1,31 +1,39 @@
-$Id: README 743 2013-02-11 18:06:24Z dturvene $
-
 History
 -------
+
 1.3.1: Updated to support kernel >= 4.15 (using timer_setup(...) instead
         of setup_timer(...))
+        
 1.3: Rebase to Kevin Cernekee's Alps mods using the 3.7 kernel.  Added
      init code for the Dell N5110 and segment init code for the 
      Fujitsu a512, which appear to have the same signature but different
      init sequences.
+     
 1.2: Add ACPI tests for Alps touchpad.
+
 1.1: Patch format with bug fix from Malte Skoruppa for E6530.
+
 1.0: Cleanup and put in Linux canonical patch format, remove all debug.
+
 0.5: elevate persistent syslog to psmouse_info for production/release capture
       of alps signature and command response - both of which determine control 
       protocol.
+      
 0.4: integrate multi-touch support from florin9doi
      default alps_debug=0, can be enabled through sysfs
      code cleanup
+     
 0.3: clean up a potential null pointer exception
      added signature for Dell I17R 7720 based on user confirmaton to V6 protocol
      disable multi-touch for V6 protocol
      include alps.sh helper scripts
+     
 0.2: add logic to isolate N5110 changes from previously supported devices
      expand diagnostics to capture touchpad protocol
      add kernel parameter to enable/disable runtime packet debug
      enabled edge scrolling for N5110
      add more shell scripts to control/debug device
+     
 0.1: hacked in rudimentary support for the Dell IR15 N5110.  Nothing else 
      should work - probably causing a kernel panic.
 
