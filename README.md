@@ -3,12 +3,15 @@ Based upon: https://www.dahetral.com/public-download/alps-psmouse-dlkm-for-3-2-a
 Usage
 -------
 Make sure you have DKMS installed:
+
 "sudo apt install dkms"
 
 Clone into folder psmouse-alps-1.3.1
+
 "git clone https://github.com/grufwub/psmouse-alps-1.3.1"
 
 Move newly created psmouse-alps-1.3.1 to /usr/src:
+
 "sudo mv <LOCATION>/psmouse-alps-1.3.1 /usr/src/psmouse-alps-1.3.1"
 
 
