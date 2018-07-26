@@ -14,7 +14,13 @@ Move newly created psmouse-alps-1.3.1 to /usr/src:
 
 > sudo mv <LOCATION>/psmouse-alps-1.3.1 /usr/src/psmouse-alps-1.3.1
 
+Add psmouse-alps-1.3.1 to DKMS
 
+> sudo dkms add psmouse-alps-1.3.1
+
+Install this newly added kernel module!
+
+> sudo dkms autoinstall
 
 History
 -------
